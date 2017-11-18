@@ -1,0 +1,7 @@
+{
+  "referenced": {
+    "string": "aaa",
+    "integer": 123,
+    "boolean": true
+  }
+}
