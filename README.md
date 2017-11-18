@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tzmfreedom/json_refs.svg?branch=master)](https://travis-ci.org/tzmfreedom/json_refs)
+
 # JsonRefs
 
 Dereference JSON reference with JSON Pointer.
