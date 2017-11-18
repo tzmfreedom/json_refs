@@ -1,5 +1,7 @@
 require "json_refs/version"
 require 'hana'
+require 'net/http'
+require 'json'
 
 module JsonRefs
   def self.call(doc)
@@ -35,7 +37,19 @@ module JsonRefs
       target = paths.inject(@doc) do |obj, key|
         obj[key]
       end
-      target[key] = Hana::Pointer.new(referenced_path[1..-1]).eval(@doc)
+      target[key] = referenced_value(referenced_path)
+    end
+
+    def referenced_value(referenced_path)
+      if referenced_path =~ /^#/
+        Hana::Pointer.new(referenced_path[1..-1]).eval(@doc)
+      elsif referenced_path =~ /^(http:\/\/|https:\/\/)/
+        json = Net::HTTP.get(URI.parse(referenced_path))
+        JSON.load(json)
+      else
+        f = File.open(referenced_path)
+        JSON.load(f)
+      end
     end
   end
 end
