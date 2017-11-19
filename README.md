@@ -39,6 +39,20 @@ json = {
     '$ref' => 'http://httpbin.org/user-agent'
   }
 }
+JsonRefs.(json)
+```
+
+YAML is also available for file format.
+```ruby
+json = {
+  'a' => {
+    '$ref' => '/path/to/yaml.yml'
+  },
+  'b' => {
+    '$ref' => '/path/to/yaml.yaml'
+  }
+}
+JsonRefs.(json)
 ```
 
 ## Development
