@@ -36,11 +36,17 @@ RSpec.describe JsonRefs do
           }
         }
       },
-      'local_path' => {
+      'local_file_path' => {
         '$ref' => File.expand_path('../fixtures/referenced.json', __FILE__)
       },
-      'remote_path' => {
+      'remote_file_path' => {
         '$ref' => 'http://httpbin.org/user-agent'
+      },
+      'yml' => {
+        '$ref' => File.expand_path('../fixtures/referenced.yaml', __FILE__)
+      },
+      'yaml' => {
+        '$ref' => File.expand_path('../fixtures/referenced.yml', __FILE__)
       }
     }
   }
@@ -74,15 +80,21 @@ RSpec.describe JsonRefs do
           }
         }
       },
-      'local_path' => {
+      'local_file_path' => {
         'referenced' => {
           'string' => 'aaa',
           'integer' => 123,
           'boolean' => true
         }
       },
-      'remote_path' => {
+      'remote_file_path' => {
         'user-agent' => 'Ruby'
+      },
+      'yml' => {
+        'yaml_attr' => 'yaml_value'
+      },
+      'yaml' => {
+        'yaml_attr' => 'yaml_value'
       }
     }
   }

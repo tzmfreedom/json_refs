@@ -1,7 +1,5 @@
-require "json_refs/version"
-require 'hana'
-require 'net/http'
-require 'json'
+require 'json_refs/version'
+require 'json_refs/dereference_handler'
 
 module JsonRefs
   def self.call(doc)
@@ -41,15 +39,8 @@ module JsonRefs
     end
 
     def referenced_value(referenced_path)
-      if referenced_path =~ /^#/
-        Hana::Pointer.new(referenced_path[1..-1]).eval(@doc)
-      elsif referenced_path =~ /^(http:\/\/|https:\/\/)/
-        json = Net::HTTP.get(URI.parse(referenced_path))
-        JSON.load(json)
-      else
-        f = File.open(referenced_path)
-        JSON.load(f)
-      end
+      klass = referenced_path =~ /^#/ ? JsonRefs::DereferenceHandler::Local : JsonRefs::DereferenceHandler::File
+      klass.new(path: referenced_path, doc: @doc).call
     end
   end
 end
