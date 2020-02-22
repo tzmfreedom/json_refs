@@ -1,1 +1,3 @@
 yaml_attr: yaml_value
+sub_schema:
+    $ref: './sub_referenced.yml'

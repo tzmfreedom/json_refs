@@ -42,10 +42,10 @@ RSpec.describe JsonRefs do
       'remote_file_path' => {
         '$ref' => 'http://httpbin.org/user-agent'
       },
-      'yml' => {
+      'yaml' => {
         '$ref' => File.expand_path('../fixtures/referenced.yaml', __FILE__)
       },
-      'yaml' => {
+      'yml' => {
         '$ref' => File.expand_path('../fixtures/referenced.yml', __FILE__)
       }
     }
@@ -90,11 +90,14 @@ RSpec.describe JsonRefs do
       'remote_file_path' => {
         'user-agent' => 'Ruby'
       },
-      'yml' => {
-        'yaml_attr' => 'yaml_value'
-      },
       'yaml' => {
         'yaml_attr' => 'yaml_value'
+      },
+      'yml' => {
+        "sub_schema" => {
+          "yet_another_yaml_attr" => "yet_another_yaml_value"
+        },
+        "yaml_attr"=>"yaml_value"
       }
     }
   }
