@@ -40,7 +40,7 @@ module JsonRefs
     end
 
     def referenced_value(referenced_path)
-      if options[:logging] == true
+      if @options[:logging] == true
         puts "De-referencing #{referenced_path}"
       end
 
