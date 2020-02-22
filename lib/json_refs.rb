@@ -69,11 +69,11 @@ module JsonRefs
       if remote_uri
         klass.new(path: referenced_path, doc: @doc).call
       else
-        recursive_deference(referenced_path, klass)
+        recursive_dereference(referenced_path, klass)
       end
     end
 
-    def recursive_deference(referenced_path, klass)
+    def recursive_dereference(referenced_path, klass)
       directory = File.dirname(referenced_path)
       filename = File.basename(referenced_path)
       
