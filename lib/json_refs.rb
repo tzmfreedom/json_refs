@@ -42,15 +42,13 @@ module JsonRefs
     def referenced_value(referenced_path)
       if referenced_path =~ /^#/
         dereference_local(referenced_path)
-      # elsif referenced_path =~ /:\/\//
-      #   referenced_path
       else
         dereference_file(referenced_path)
       end
     end
 
     def dereference_local(referenced_path)
-      if @options[:resolve_local_ref] === false 
+      if @options[:resolve_local_ref] === false
         return { '$ref': referenced_path }
       end
 
@@ -59,16 +57,23 @@ module JsonRefs
     end
 
     def dereference_file(referenced_path)
-      if @options[:resolve_file_ref] === false 
+      if @options[:resolve_file_ref] === false
         return { '$ref': referenced_path }
       end
 
       klass = JsonRefs::DereferenceHandler::File
-      remote_uri = referenced_path =~ /:\/\//
-      if remote_uri
-        return klass.new(path: referenced_path, doc: @doc).call
-      end
 
+      # Checking for "://" in a URL like http://something.com so as to determine if it's a remote URL
+      remote_uri = referenced_path =~ /:\/\//
+
+      if remote_uri
+        klass.new(path: referenced_path, doc: @doc).call
+      else
+        recursive_deference(referenced_path, klass)
+      end
+    end
+
+    def recursive_deference(referenced_path, klass)
       directory = File.dirname(referenced_path)
       filename = File.basename(referenced_path)
       
@@ -77,7 +82,6 @@ module JsonRefs
         referenced_doc = klass.new(path: filename, doc: @doc).call
         dereferenced_doc = Dereferencer.new(referenced_doc, @options).call
       end
-
       dereferenced_doc
     end
   end
