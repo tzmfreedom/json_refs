@@ -55,6 +55,14 @@ json = {
 JsonRefs.(json)
 ```
 
+In case you don't want to resolve local references or file references, you have the following options 
+to pass down when you initialize the JSONRefs. If you don't pass the following, both references will be resolved.
+```ruby
+JsonRefs.(json, { resolve_local_ref: false, resolve_file_ref: true })
+```
+
+JSONRef supports recursive reference resolving. If one the files that you reference have another reference in it, JSONRef will try to automatically resolve that.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

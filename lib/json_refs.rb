@@ -2,13 +2,14 @@ require 'json_refs/version'
 require 'json_refs/dereference_handler'
 
 module JsonRefs
-  def self.call(doc)
-    Dereferencer.new(doc).call
+  def self.call(doc, options = {})
+    Dereferencer.new(doc, options).call
   end
 
   class Dereferencer
-    def initialize(doc)
+    def initialize(doc, options = {})
       @doc = doc
+      @options = options
     end
 
     def call(doc = @doc, keys = [])
@@ -39,8 +40,53 @@ module JsonRefs
     end
 
     def referenced_value(referenced_path)
-      klass = referenced_path =~ /^#/ ? JsonRefs::DereferenceHandler::Local : JsonRefs::DereferenceHandler::File
+      if @options[:logging] == true
+        puts "De-referencing #{referenced_path}"
+      end
+
+      if referenced_path =~ /^#/
+        dereference_local(referenced_path)
+      else
+        dereference_file(referenced_path)
+      end
+    end
+
+    def dereference_local(referenced_path)
+      if @options[:resolve_local_ref] === false
+        return { '$ref': referenced_path }
+      end
+
+      klass = JsonRefs::DereferenceHandler::Local
       klass.new(path: referenced_path, doc: @doc).call
+    end
+
+    def dereference_file(referenced_path)
+      if @options[:resolve_file_ref] === false
+        return { '$ref': referenced_path }
+      end
+
+      klass = JsonRefs::DereferenceHandler::File
+
+      # Checking for "://" in a URL like http://something.com so as to determine if it's a remote URL
+      remote_uri = referenced_path =~ /:\/\//
+
+      if remote_uri
+        klass.new(path: referenced_path, doc: @doc).call
+      else
+        recursive_dereference(referenced_path, klass)
+      end
+    end
+
+    def recursive_dereference(referenced_path, klass)
+      directory = File.dirname(referenced_path)
+      filename = File.basename(referenced_path)
+      
+      dereferenced_doc = {}
+      Dir.chdir(directory) do
+        referenced_doc = klass.new(path: filename, doc: @doc).call
+        dereferenced_doc = Dereferencer.new(referenced_doc, @options).call
+      end
+      dereferenced_doc
     end
   end
 end
