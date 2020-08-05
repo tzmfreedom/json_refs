@@ -2,8 +2,12 @@ require 'json_refs/version'
 require 'json_refs/dereference_handler'
 
 module JsonRefs
-  def self.call(doc, options = {})
-    Dereferencer.new(doc, options).call
+  class << self
+    def call(doc, options = {})
+      Dereferencer.new(doc, options).call
+    end
+
+    alias_method :dereference, :call
   end
 
   class Dereferencer

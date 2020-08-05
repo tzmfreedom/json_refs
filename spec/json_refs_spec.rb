@@ -105,5 +105,8 @@ RSpec.describe JsonRefs do
   it "dereference JSON reference" do
     result = JsonRefs.(input)
     expect(result).to eq(expected)
+
+    result = JsonRefs.dereference(input)
+    expect(result).to eq(expected)
   end
 end
