@@ -27,8 +27,7 @@ module JsonRefs
     end
 
     def handle(filename)
-      f = open(filename)
-      @body = f.read
+      @body = read_reference_file(filename)
       ext = File.extname(filename)[1..-1]
       ext ||= 'json' if json?(@body)
       ext && EXTENSIONS.include?(ext) ? EXTENSIONS[ext].new.call(@body) : @body
@@ -39,6 +38,16 @@ module JsonRefs
       true
     rescue JSON::ParserError => e
       false
+    end
+
+    private
+
+    def read_reference_file(filename)
+      if RUBY_VERSION >= '2.7.0'
+        URI.open(filename, 'r', &:read)
+      else
+        open(filename, 'r', &:read)
+      end
     end
   end
 end
