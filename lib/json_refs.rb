@@ -57,7 +57,7 @@ module JsonRefs
 
     def dereference_local(referenced_path)
       if @options[:resolve_local_ref] === false
-        return { '$ref': referenced_path }
+        return { '$ref' => referenced_path }
       end
 
       klass = JsonRefs::DereferenceHandler::Local
@@ -66,7 +66,7 @@ module JsonRefs
 
     def dereference_file(referenced_path)
       if @options[:resolve_file_ref] === false
-        return { '$ref': referenced_path }
+        return { '$ref' => referenced_path }
       end
 
       klass = JsonRefs::DereferenceHandler::File
