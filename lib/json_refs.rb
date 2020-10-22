@@ -48,11 +48,17 @@ module JsonRefs
         puts "De-referencing #{referenced_path}"
       end
 
-      if referenced_path =~ /^#/
-        dereference_local(referenced_path)
-      else
-        dereference_file(referenced_path)
-      end
+      filepath, pointer = referenced_path.split('#')
+      pointer.prepend('#') if pointer
+      return dereference_local(pointer) if filepath.empty?
+
+      dereferenced_file = dereference_file(filepath)
+      return dereferenced_file if pointer.nil?
+
+      JsonRefs::DereferenceHandler::Local.new(
+        doc: dereferenced_file,
+        path: pointer
+      ).call
     end
 
     def dereference_local(referenced_path)
@@ -84,7 +90,7 @@ module JsonRefs
     def recursive_dereference(referenced_path, klass)
       directory = File.dirname(referenced_path)
       filename = File.basename(referenced_path)
-      
+
       dereferenced_doc = {}
       Dir.chdir(directory) do
         referenced_doc = klass.new(path: filename, doc: @doc).call

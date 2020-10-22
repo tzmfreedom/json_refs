@@ -1,0 +1,3 @@
+schemas:
+  cat:
+    name: Cat
