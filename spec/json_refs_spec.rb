@@ -47,6 +47,9 @@ RSpec.describe JsonRefs do
       },
       'yml' => {
         '$ref' => File.expand_path('../fixtures/referenced.yml', __FILE__)
+      },
+      'file_with_pointer' => {
+        '$ref' => "#{File.expand_path('../fixtures/components.yaml', __FILE__)}#/schemas/cat"
       }
     }
   }
@@ -98,6 +101,9 @@ RSpec.describe JsonRefs do
           "yet_another_yaml_attr" => "yet_another_yaml_value"
         },
         "yaml_attr"=>"yaml_value"
+      },
+      'file_with_pointer' => {
+        "name" => "Cat"
       }
     }
   }
