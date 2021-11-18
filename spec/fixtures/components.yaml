@@ -1,3 +1,4 @@
 schemas:
   cat:
-    name: Cat
+    $ref: './schemas/cat.yaml'
+

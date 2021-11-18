@@ -40,7 +40,14 @@ module JsonRefs
       target = paths.inject(@doc) do |obj, key|
         obj[key]
       end
-      target[key] = referenced_value(referenced_path)
+      value = follow_referenced_value(referenced_path)
+      target[key] = value
+    end
+
+    def follow_referenced_value(referenced_path)
+      value = referenced_value(referenced_path)
+      return referenced_value(value['$ref']) if value.is_a?(Hash) && value.has_key?('$ref')
+      value
     end
 
     def referenced_value(referenced_path)

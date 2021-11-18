@@ -103,7 +103,7 @@ RSpec.describe JsonRefs do
         "yaml_attr"=>"yaml_value"
       },
       'file_with_pointer' => {
-        "name" => "Cat"
+        "title" => "Cat"
       }
     }
   }
@@ -114,5 +114,14 @@ RSpec.describe JsonRefs do
 
     result = JsonRefs.dereference(input)
     expect(result).to eq(expected)
+  end
+
+  it "follows pointers through files" do
+    result = Dir.chdir('./spec/fixtures') do
+      input = YAML.safe_load(File.read('following.yaml'))
+      JsonRefs.(input)
+    end
+    schema = result.dig('paths', '/cats', 'body', 'items')
+    expect(schema).to eq({ 'title' => 'Cat'})
   end
 end
