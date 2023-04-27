@@ -12,7 +12,7 @@ module JsonRefs
 
     class Yaml
       def call(file)
-        YAML.load(file)
+        RUBY_VERSION >= '3.1.0' ? YAML.unsafe_load(file) : YAML.load(file)
       end
     end
 
