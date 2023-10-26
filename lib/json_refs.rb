@@ -4,16 +4,17 @@ require 'json_refs/dereference_handler'
 module JsonRefs
   class << self
     def call(doc, options = {})
-      Dereferencer.new(doc, options).call
+      Dereferencer.new(Dir.pwd, doc, options).call
     end
 
     alias_method :dereference, :call
   end
 
   class Dereferencer
-    def initialize(doc, options = {})
+    def initialize(doc_dir, doc, options = {})
       @doc = doc
       @options = options
+      @doc_dir = doc_dir
     end
 
     def call(doc = @doc, keys = [])
@@ -34,6 +35,8 @@ module JsonRefs
     end
 
     private
+
+    attr_reader :doc_dir
 
     def dereference(paths, referenced_path)
       key = paths.pop
@@ -95,15 +98,13 @@ module JsonRefs
     end
 
     def recursive_dereference(referenced_path, klass)
-      directory = File.dirname(referenced_path)
-      filename = File.basename(referenced_path)
-
-      dereferenced_doc = {}
-      Dir.chdir(directory) do
-        referenced_doc = klass.new(path: filename, doc: @doc).call
-        dereferenced_doc = Dereferencer.new(referenced_doc, @options).call
+      unless File.absolute_path?(referenced_path)
+        referenced_path = "#{doc_dir}/#{referenced_path}"
       end
-      dereferenced_doc
+      directory = File.dirname(referenced_path)
+
+      referenced_doc = klass.new(path: referenced_path, doc: @doc).call
+      Dereferencer.new(directory, referenced_doc, @options).call
     end
   end
 end
