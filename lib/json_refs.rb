@@ -8,6 +8,12 @@ module JsonRefs
     end
 
     alias_method :dereference, :call
+
+    def load(filename, options = {})
+      doc_dir = File.dirname(filename)
+      doc = Loader.handle(filename)
+      Dereferencer.new(doc_dir, doc, options).call
+    end
   end
 
   class Dereferencer
