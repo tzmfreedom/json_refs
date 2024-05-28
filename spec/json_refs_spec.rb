@@ -124,4 +124,24 @@ RSpec.describe JsonRefs do
     schema = result.dig('paths', '/cats', 'body', 'items')
     expect(schema).to eq({ 'title' => 'Cat'})
   end
+
+  describe '.load' do
+    it 'loads a .json file' do
+      result = JsonRefs.load("#{__dir__}/fixtures/input.json")
+      schema = result.dig('paths', '/cats', 'body', 'items')
+      expect(schema).to eq({ 'title' => 'Cat'})
+    end
+
+    it 'loads a .yaml file' do
+      result = JsonRefs.load("#{__dir__}/fixtures/input.yaml")
+      schema = result.dig('paths', '/cats', 'body', 'items')
+      expect(schema).to eq({ 'title' => 'Cat'})
+    end
+
+    it 'loads a .yml file' do
+      result = JsonRefs.load("#{__dir__}/fixtures/input.yml")
+      schema = result.dig('paths', '/cats', 'body', 'items')
+      expect(schema).to eq({ 'title' => 'Cat'})
+    end
+  end
 end

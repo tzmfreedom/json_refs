@@ -1,0 +1,18 @@
+paths:
+  /cats:
+    body:
+      type: array
+      items:
+        $ref: '#/components/Cat'
+  /hounds:
+    body:
+      type: array
+      items:
+        $ref: '#/components/Hound'
+components:
+  Cat:
+    $ref: './components.yaml#/schemas/cat'
+  Hound:
+    $ref: '#/components/Hound'
+  Dog:
+    name: 'Dog'

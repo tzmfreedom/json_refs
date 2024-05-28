@@ -25,6 +25,8 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
+JsonRefs.load('my/file.yaml') # or .yml, .json
+
 json = { 'a' => 'foo', 'b' => { '$ref' => '#/a' } }
 JsonRefs.(json) # {"a"=>"foo", "b"=>"foo"}
 ```
